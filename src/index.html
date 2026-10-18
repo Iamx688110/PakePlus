@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iamx的资料库</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ctext y='19' font-size='19'%3E%F0%9F%94%92%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main class="vault">
+  <header>
+    <h1>Iamx的资料库</h1>
+  </header>
+
+  <section class="panel" id="vaultPanel">
+    <!-- ============ ID（最上面，加大显示） ============ -->
+    <div class="id-block">
+      <div class="id-label">ID</div>
+      <div class="id-value" id="secretText"></div>
+      <div class="id-note">验证失败时，请保存本 ID 并发送给管理员</div>
+    </div>
+
+    <!-- ============ 中部：左右两栏（登录 | 扫码获取动态密码） ============ -->
+    <div class="two-col">
+      <!-- ============ 登录（独立通道一，左栏） ============ -->
+      <div class="section">
+        <div class="panel-title"><span class="bar"></span>登录</div>
+
+        <div class="seg" id="loginFieldSeg">
+          <button type="button" class="active" data-field="username">用户名</button>
+          <button type="button" data-field="email">邮箱</button>
+        </div>
+
+        <form id="loginForm" autocomplete="off" novalidate>
+          <div class="field">
+            <input type="text" id="username" placeholder="请输入用户名" autocomplete="username">
+            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="7" r="4"/></svg></span>
+          </div>
+          <div class="field">
+            <input type="password" id="password" placeholder="请输入密码" autocomplete="current-password">
+            <button type="button" class="eye-btn" id="eyeBtn" aria-label="显示或隐藏密码">
+              <svg id="eyeOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eyeClosed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>
+            </button>
+          </div>
+          <div class="caps-hint" id="capsHint">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2l9 17H3z"/><path d="M12 9v4"/><path d="M12 16.5v.5"/></svg>
+            大写锁定 (Caps Lock) 已开启
+          </div>
+
+          <div class="checks">
+            <label class="check"><input type="checkbox" id="rememberMe" checked>记住用户名</label>
+            <label class="check"><input type="checkbox" id="autoLogin">自动登录（30 天）</label>
+          </div>
+        </form>
+
+      <div class="register-line">没有账号？<a id="registerLink">立即注册</a></div>
+
+      <!-- 登录栏底部操作：进入资料库 + 刷新二维码 -->
+      <div class="col-actions">
+        <button type="submit" form="loginForm" class="big-btn primary" id="submitBtn">进入资料库</button>
+        <button type="button" class="big-btn ghost" id="refreshQrBtn">刷新二维码</button>
+      </div>
+    </div>
+
+      <!-- ============ 扫码获取动态密码（独立通道二，右栏） ============ -->
+      <div class="section">
+        <div class="panel-title"><span class="bar gold"></span>扫码获取动态密码<span class="badge">本地生成</span></div>
+        <div class="qr-stage">
+          <div class="qr-frame" id="qrFrame">
+            <canvas id="qrCanvas" width="196" height="196"></canvas>
+            <div class="qr-refresh-mask"></div>
+          </div>
+
+          <div class="countdown" title="动态密码刷新倒计时">
+            <svg viewBox="0 0 46 46">
+              <circle class="track" cx="23" cy="23" r="19"></circle>
+              <circle class="prog" id="ringProg" cx="23" cy="23" r="19" stroke-dasharray="119.4" stroke-dashoffset="0"></circle>
+            </svg>
+            <span class="num" id="ringNum">60</span>
+          </div>
+          <p class="countdown-caption">秒后自动更新</p>
+
+          <div class="code-row" id="codeRow">
+            <input type="text" id="dynCodeInput" maxlength="6" inputmode="numeric" placeholder="输入扫码获得的密码" autocomplete="one-time-code">
+          </div>
+        <p class="code-msg" id="codeMsg"></p>
+
+        <!-- 扫码栏底部操作：确认（位于密码输入框下方） -->
+        <button type="button" class="big-btn primary" id="confirmBtn">确认</button>
+      </div>
+    </div>
+    </div>
+
+    <div class="status" id="statusBox"></div>
+  </section>
+
+  <footer>
+    <span>动态密码本地生成</span>
+    <span class="private">本应用为私密应用，请联系管理员新增账户登录</span>
+  </footer>
+</main>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+  <span id="toastText"></span>
+</div>
+
+<script src="qrcode.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
